@@ -34,7 +34,6 @@ InvalidFilename, DataRetrievalError)
 def getMoveDestination(episode):
     """Constructs the location to move/copy the file
     """
-
     #TODO: Write functional test to ensure this valid'ifying works
     def wrap_validfname(fname):
         """Wrap the makeValidFilename function as it's called twice
@@ -71,6 +70,7 @@ def getMoveDestination(episode):
             'seasonnumber': episode.seasonnumber,
             'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
             'originalfilename': episode.originalfilename,
+            'pwd': os.getcwd(),
             }
     return destdir
 
@@ -151,7 +151,6 @@ def processFile(tvdb_instance, episode):
     """
     p("#" * 20)
     p("# Processing file: %s" % episode.fullfilename)
-
     if len(Config['input_filename_replacements']) > 0:
         replaced = applyCustomInputReplacements(episode.fullfilename)
         p("# With custom replacements: %s" % (replaced))

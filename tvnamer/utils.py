@@ -12,6 +12,7 @@ import logging
 import platform
 import errno
 
+from pymediainfo import MediaInfo
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
@@ -746,10 +747,29 @@ class EpisodeInfo(object):
             'seasonno': self.seasonnumber, # TODO: deprecated attribute, make this warn somehow
             'seasonnumber': self.seasonnumber,
             'episode': epno,
+            'episodenumber': int(epno),
             'episodename': self.episodename,
             'ext': prep_extension}
+        self.getMediaInfo(epdata)
 
         return epdata
+
+    def getMediaInfo(self, epdata):
+        info = MediaInfo.parse(os.path.join(self.filepath, self.originalfilename))
+        video = next((_x for _x in info.tracks if _x.track_type == 'Video'), None)
+        if not video:
+            return
+        codec_map = {
+            'V_MPEGH/ISO/HEVC'.lower(): 'HEVC',
+            'V_MPEG2'.lower(): 'MPEG2',
+            'avc1'.lower(): 'h264',
+            }
+        epdata['codec'] = codec_map.get(video.codec_id.lower(), None)
+        resolution = str(video.height)
+        resolution += 'i' if video.scan_type == 'Interlaced' else 'p'
+        epdata['resolution'] = resolution
+        print(epdata)
+        
 
     def generateFilename(self, lowercase = False, preview_orig_filename = False):
         epdata = self.getepdata()
@@ -1044,7 +1064,6 @@ class Renamer(object):
         If it was moved, a symlink will be left behind with the original name
         pointing to the file's new destination if leave_symlink is True.
         """
-
         if always_copy and always_move:
             raise ValueError("Both always_copy and always_move cannot be specified")
 

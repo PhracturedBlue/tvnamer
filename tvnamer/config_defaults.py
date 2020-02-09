@@ -93,7 +93,7 @@ defaults = {
     'search_all_languages': True,
 
     # Move renamed files to directory?
-    'move_files_enable': False,
+    'move_files_enable': True,
 
     # Separate confirmation of moving or copying renamed file?  If
     # False, will move files when renaming. In batch mode, will never
@@ -121,7 +121,7 @@ defaults = {
     # - %(seasonnumber)d
     # - %(episodenumbers)s (Note: this is a string, formatted with config
     #                       variable episode_single and joined with episode_separator)
-    'move_files_destination': '.',
+    'move_files_destination': '%(pwd)s/%(seriesname)s/Season %(seasonnumber)02d/',
 
     # Same as above, only for date-numbered episodes. The following
     # variables are available:
@@ -394,7 +394,8 @@ defaults = {
     # Formats for renamed files. Variations for with/without episode,
     # and with/without season number.
     'filename_with_episode':
-     '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
+    '%(seriesname)s.S%(seasonnumber)02dE%(episodenumber)02d.%(episodename)s.%(resolution)s.%(codec)s%(ext)s',
+    # '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode':
      '%(seriesname)s - [%(seasonnumber)02dx%(episode)s]%(ext)s',
 
